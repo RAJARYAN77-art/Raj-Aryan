@@ -1,0 +1,237 @@
+ * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+ }
+
+ body {
+     font-family: 'Poppins', sans-serif;
+     text-align: center;
+     background: radial-gradient(circle at center, #0b0b0b, #000);
+     color: #fff;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     min-height: 100vh;
+     padding: 20px;
+ }
+
+ h1 {
+     font-size: 2.5rem;
+     color: #00ff88;
+     margin-top: 20px;
+     margin-bottom: 20px;
+     text-shadow: 0 0 15px #00ff88;
+ }
+
+ .mode-selection {
+     margin: 20px 0;
+ }
+
+ .mode-button {
+     padding: 12px 25px;
+     margin: 10px;
+     border: none;
+     border-radius: 12px;
+     background: linear-gradient(135deg, #00ff88, #00cc66);
+     color: #000;
+     cursor: pointer;
+     font-size: 1.1rem;
+     font-weight: bold;
+     box-shadow: 0 0 10px #00ff88;
+     transition: all 0.3s;
+ }
+
+
+ .mode-button:hover {
+     transform: scale(1.05);
+     box-shadow: 0 0 20px #00ff88;
+ }
+
+ .game-container {
+     display: none;
+     justify-content: center;
+     align-items: center;
+     margin-top: 20px;
+ }
+
+ .game-board {
+     display: grid;
+     grid-template-columns: repeat(3, minmax(90px, 120px));
+     grid-template-rows: repeat(3, minmax(90px, 120px));
+     gap: 8px;
+     background-color: #1a1a1a;
+     padding: 10px;
+     border-radius: 16px;
+     box-shadow: 0 0 25px #00ff88;
+ }
+
+ .cell {
+     border: 2px solid #00ff88;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     font-size: 2.5rem;
+     cursor: pointer;
+     border-radius: 10px;
+     background-color: #0f0f0f;
+     transition: all 0.2s;
+ }
+
+ .cell:hover {
+     background-color: #004d26;
+ }
+
+ .game-info {
+     display: none;
+     margin-top: 25px;
+ }
+
+ p#turn {
+     font-size: 1.3rem;
+     color: #00ffcc;
+     margin-bottom: 10px;
+ }
+
+ button {
+     margin: 8px;
+     padding: 12px 24px;
+     border: none;
+     border-radius: 10px;
+     background: linear-gradient(135deg, #00ff88, #00cc66);
+     color: #000;
+     cursor: pointer;
+     font-size: 1rem;
+     font-weight: bold;
+     box-shadow: 0 0 10px #00ff88;
+     transition: all 0.3s;
+ }
+
+ button:hover {
+     transform: scale(1.05);
+     box-shadow: 0 0 20px #00ff88;
+ }
+
+ #winner-message {
+     color: #ff4444;
+     font-size: 2rem;
+     margin-top: 30px;
+     display: none;
+     text-shadow: 0 0 10px #ff4444;
+ }
+
+ /* 📱 RESPONSIVE STYLING */
+ @media (max-width: 768px) {
+     h1 {
+         font-size: 2rem;
+     }
+
+     .game-board {
+         grid-template-columns: repeat(3, minmax(80px, 100px));
+         grid-template-rows: repeat(3, minmax(80px, 100px));
+         gap: 6px;
+     }
+
+     .cell {
+         font-size: 2rem;
+     }
+
+     .mode-button,
+     button {
+         width: 80%;
+         font-size: 1rem;
+     }
+
+     #winner-message {
+         font-size: 1.8rem;
+     }
+ }
+
+ @media (max-width: 480px) {
+     h1 {
+         font-size: 1.8rem;
+     }
+
+     .game-board {
+         grid-template-columns: repeat(3, minmax(70px, 90px));
+         grid-template-rows: repeat(3, minmax(70px, 90px));
+     }
+
+     .cell {
+         font-size: 1.8rem;
+     }
+
+     .mode-button,
+     button {
+         width: 90%;
+         font-size: 1rem;
+     }
+
+     #winner-message {
+         font-size: 50%;
+         height: 50%;
+         width: 50%;
+     }
+ }
+
+
+ /* Footer */
+ footer {
+     background-color: var(--darker);
+     padding: 3rem 2rem 1rem;
+     background-color: #0b0b0b;
+ }
+
+ .footer-content {
+     max-width: 1200px;
+     margin: 0 auto;
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     gap: 2rem;
+ }
+
+ .footer-column h3 {
+     color: var(--accent);
+     margin-bottom: 1.5rem;
+     font-size: 1.3rem;
+ }
+
+ .footer-column ul {
+     list-style: none;
+ }
+
+ .footer-column ul li {
+     margin-bottom: 0.8rem;
+ }
+
+ .footer-column a {
+     color: #ccc;
+     text-decoration: none;
+     transition: color 0.3s;
+ }
+
+ .footer-column a:hover {
+     color: var(--primary);
+ }
+
+ .social-icons {
+     display: flex;
+     gap: 1rem;
+     margin-top: 1rem;
+ }
+
+ .social-icons a {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     width: 40px;
+     height: 40px;
+     background: rgba(255, 255, 255, 0.1);
+     border-radius: 50%;
+     transition: all 0.3s;
+ }
+
+ .social-icons a:hover {
+     background: var(--primary);
+     transform: translateY(-3px);
+ }

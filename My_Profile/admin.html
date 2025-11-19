@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Support Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+  <script src="loginRequired.js"></script>
+</head>
+<body>
+  <main class="container">
+    <h2>Admin Panel</h2>
+    <div id="adminContent">
+      <!-- Filled with users list -->
+    </div>
+    <div style="margin-top:16px;">
+      <button id="adminLogout" class="danger">Logout</button>
+    </div>
+  </main>
+
+  <script>
+    authInit();
+
+    // Ensure admin only
+    const curr = authGetCurrentUser();
+    if (!curr || !curr.isAdmin) {
+      alert('Admin access required.');
+      window.location = 'login.html';
+    }
+
+    function renderUsersTable() {
+      const users = authGetAllUsers();
+      const container = document.getElementById('adminContent');
+      if (!users.length) {
+        container.innerHTML = '<p>No users found.</p>';
+        return;
+      }
+      let html = '<table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Age</th><th>Admin?</th><th>Actions</th></tr></thead><tbody>';
+      users.forEach(u => {
+        html += `<tr>
+          <td>${escapeHtml(u.name || '')}</td>
+          <td>${escapeHtml(u.email)}</td>
+          <td>${escapeHtml(u.age || '')}</td>
+          <td>${u.isAdmin ? 'Yes' : 'No'}</td>
+          <td>
+            <button class="viewBtn" data-email="${u.email}">View</button>
+            ${u.email !== curr.email ? `<button class="delBtn" data-email="${u.email}">Delete</button>` : ''}
+          </td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+
+      // attach handlers
+      container.querySelectorAll('.viewBtn').forEach(b=>{
+        b.addEventListener('click', (ev)=>{
+          const email = ev.target.dataset.email;
+          const u = authFindUser(email);
+          alert(`User: ${u.name}\nEmail: ${u.email}\nAge: ${u.age}\nCountry: ${u.country || ''}\nSocial: ${(u.social||[]).join(', ')}`);
+        });
+      });
+      container.querySelectorAll('.delBtn').forEach(b=>{
+        b.addEventListener('click', (ev)=>{
+          const email = ev.target.dataset.email;
+          if (!confirm('Delete user ' + email + ' ?')) return;
+          authDeleteUser(email);
+          renderUsersTable();
+        });
+      });
+    }
+
+    // helpers
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);});
+    }
+
+    document.getElementById('adminLogout').addEventListener('click', ()=> {
+      authLogout();
+    });
+
+    renderUsersTable();
+  </script>
+</body>
+</html>

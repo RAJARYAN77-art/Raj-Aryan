@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Max Clone | Portfolio Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            z-index: 10;
+        }
+
+        .profile-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid #ffcc00;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ffcc00, #ff9900);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            color: #fff;
+        }
+
+        .loading-bar-container {
+            width: 80%;
+            max-width: 500px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9900, #ffcc00);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+
+        .internet-speed {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            z-index: 9;
+        }
+
+        .game-logo {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+            margin-bottom: 40px;
+        }
+
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80%;
+            max-width: 350px;
+        }
+
+        .login-btn {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .facebook-btn {
+            background: #3b5998;
+            color: white;
+        }
+
+        .email-btn {
+            background: #ff9900;
+            color: white;
+        }
+
+        .guest-btn {
+            background: #333;
+            color: white;
+        }
+
+        /* Username Screen */
+        #username-screen {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            z-index: 8;
+        }
+
+        .username-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 80%;
+            max-width: 350px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 16px;
+            color: #ffcc00;
+        }
+
+        .input-group input {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .confirm-btn {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background: #ff9900;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            background: #ffcc00;
+            transform: translateY(-3px);
+        }
+
+        .error-message {
+            color: #ff3333;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Lobby Screen */
+        #lobby-screen {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            z-index: 7;
+            padding: 20px;
+        }
+
+        .lobby-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff9900, #ffcc00);
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .username {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .level {
+            color: #ffcc00;
+            font-size: 14px;
+        }
+
+        .lobby-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: #ff9900;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 153, 0, 0.5);
+        }
+
+        .lobby-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff9900, #ffcc00);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 153, 0, 0.5);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 153, 0, 0.7);
+        }
+
+        .lobby-footer {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        /* Admin Panel */
+        #admin-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: rgba(20, 20, 50, 0.95);
+            z-index: 100;
+            transition: right 0.5s ease;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #admin-panel.active {
+            right: 0;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #444;
+        }
+
+        .admin-title {
+            font-size: 24px;
+            color: #ffcc00;
+        }
+
+        .close-admin {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+
+        .admin-btn {
+            padding: 10px 15px;
+            background: #ff9900;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #ff9900;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Game Screen */
+        #game-screen {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            z-index: 6;
+        }
+
+        .game-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .game-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .game-map {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 2px solid #ffcc00;
+        }
+
+        .health-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 200px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff3333, #ff9900);
+            border-radius: 10px;
+        }
+
+        .ammo-count {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen">
+        <div class="profile-photo">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loading-bar"></div>
+        </div>
+        <div class="loading-text" id="loading-text">Loading Game Resources...</div>
+        <div class="internet-speed" id="internet-speed">Checking your internet speed...</div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen hidden">
+        <div class="game-logo">FREE FIRE MAX</div>
+        <div class="login-options">
+            <button class="login-btn facebook-btn" id="facebook-login">
+                <i class="fab fa-facebook"></i> Login with Facebook
+            </button>
+            <button class="login-btn email-btn" id="email-login">
+                <i class="fas fa-envelope"></i> Login with Email
+            </button>
+            <button class="login-btn guest-btn" id="guest-login">
+                <i class="fas fa-user"></i> Play as Guest
+            </button>
+        </div>
+    </div>
+
+    <!-- Username Screen -->
+    <div id="username-screen" class="screen hidden">
+        <div class="game-logo">CREATE ACCOUNT</div>
+        <div class="username-form">
+            <div class="input-group">
+                <label for="username">Choose a Username</label>
+                <input type="text" id="username" placeholder="Enter your username">
+            </div>
+            <button class="confirm-btn" id="confirm-username">Confirm</button>
+            <div class="error-message" id="username-error">Username already taken. Please choose another one.</div>
+        </div>
+    </div>
+
+    <!-- Lobby Screen -->
+    <div id="lobby-screen" class="screen hidden">
+        <div class="lobby-header">
+            <div class="user-info">
+                <div class="user-avatar"></div>
+                <div class="user-details">
+                    <div class="username" id="display-username">Player123</div>
+                    <div class="level">Level 25</div>
+                </div>
+            </div>
+            <div class="lobby-nav">
+                <div class="nav-btn active">Home</div>
+                <div class="nav-btn">Characters</div>
+                <div class="nav-btn">Weapons</div>
+                <div class="nav-btn">Shop</div>
+            </div>
+        </div>
+        
+        <div class="lobby-content">
+            <button class="start-btn" id="start-game">START GAME</button>
+        </div>
+        
+        <div class="lobby-footer">
+            <div class="game-info">Free Fire Max Clone - Portfolio Project</div>
+            <div class="logout-btn" id="lobby-logout">Logout</div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <div class="game-ui">
+            <div class="health-bar">
+                <div class="health-fill"></div>
+            </div>
+            <div class="ammo-count">Ammo: 30/120</div>
+            <div class="game-controls">
+                <div class="control-btn"><i class="fas fa-crosshairs"></i></div>
+                <div class="control-btn"><i class="fas fa-running"></i></div>
+                <div class="control-btn"><i class="fas fa-cube"></i></div>
+            </div>
+            <div class="game-map"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel">
+        <div class="admin-header">
+            <div class="admin-title">Admin Panel</div>
+            <button class="close-admin" id="close-admin"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="admin-section">
+            <div class="section-title">Loading Screen</div>
+            <div class="input-group">
+                <label>Loading Screen Image</label>
+                <input type="file" id="loading-image">
+            </div>
+            <button class="admin-btn" id="update-loading">Update Loading Screen</button>
+        </div>
+        
+        <div class="admin-section">
+            <div class="section-title">Game Updates</div>
+            <div class="input-group">
+                <label>Update Message</label>
+                <input type="text" id="update-message" placeholder="Enter update message">
+            </div>
+            <button class="admin-btn" id="add-update">Add Update</button>
+        </div>
+        
+        <div class="admin-section">
+            <div class="section-title">Game Settings</div>
+            <div class="input-group">
+                <label>Game Version</label>
+                <input type="text" id="game-version" value="1.0.0">
+            </div>
+            <button class="admin-btn" id="update-settings">Update Settings</button>
+        </div>
+    </div>
+
+    <div class="admin-toggle" id="admin-toggle">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const loginScreen = document.getElementById('login-screen');
+        const usernameScreen = document.getElementById('username-screen');
+        const lobbyScreen = document.getElementById('lobby-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        const loadingBar = document.getElementById('loading-bar');
+        const loadingText = document.getElementById('loading-text');
+        const internetSpeed = document.getElementById('internet-speed');
+        
+        const facebookLogin = document.getElementById('facebook-login');
+        const emailLogin = document.getElementById('email-login');
+        const guestLogin = document.getElementById('guest-login');
+        
+        const usernameInput = document.getElementById('username');
+        const confirmUsername = document.getElementById('confirm-username');
+        const usernameError = document.getElementById('username-error');
+        
+        const displayUsername = document.getElementById('display-username');
+        const startGame = document.getElementById('start-game');
+        const lobbyLogout = document.getElementById('lobby-logout');
+        
+        const adminToggle = document.getElementById('admin-toggle');
+        const closeAdmin = document.getElementById('close-admin');
+        
+        // Game State
+        let currentUser = null;
+        let isAdmin = false;
+        let takenUsernames = ['player1', 'admin', 'test', 'freefire'];
+        
+        // Show screen function
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            screen.classList.remove('hidden');
+        }
+        
+        // Simulate loading process
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                loadingBar.style.width = `${progress}%`;
+                
+                if (progress < 30) {
+                    loadingText.textContent = "Loading Game Resources...";
+                } else if (progress < 60) {
+                    loadingText.textContent = "Loading Game Assets...";
+                } else if (progress < 90) {
+                    loadingText.textContent = "Finalizing Setup...";
+                } else {
+                    loadingText.textContent = "Almost Ready...";
+                }
+                
+                // Simulate internet speed check
+                if (progress > 20 && progress < 40) {
+                    internetSpeed.textContent = "Internet Speed: Good";
+                } else if (progress > 70) {
+                    internetSpeed.textContent = "Internet Speed: Excellent";
+                }
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        showScreen(loginScreen);
+                    }, 1000);
+                }
+            }, 300);
+        }
+        
+        // Check if user is logged in
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('freeFireUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                displayUsername.textContent = currentUser.username;
+                showScreen(lobbyScreen);
+                
+                // Check if user is admin
+                if (currentUser.facebookId === '61577171355837') {
+                    isAdmin = true;
+                    adminToggle.style.display = 'flex';
+                }
+            }
+        }
+        
+        // Login functions
+        facebookLogin.addEventListener('click', () => {
+            if (currentUser) {
+                // User is already logged in, show logout option
+                if (confirm('Do you want to logout?')) {
+                    localStorage.removeItem('freeFireUser');
+                    currentUser = null;
+                    isAdmin = false;
+                    adminToggle.style.display = 'none';
+                    showScreen(loginScreen);
+                }
+            } else {
+                // Simulate Facebook login
+                const facebookId = '61577171355837'; // This would normally come from Facebook API
+                currentUser = {
+                    username: 'Facebook User',
+                    loginMethod: 'facebook',
+                    facebookId: facebookId
+                };
+                
+                localStorage.setItem('freeFireUser', JSON.stringify(currentUser));
+                displayUsername.textContent = currentUser.username;
+                showScreen(lobbyScreen);
+                
+                // Check if user is admin
+                if (facebookId === '61577171355837') {
+                    isAdmin = true;
+                    adminToggle.style.display = 'flex';
+                }
+            }
+        });
+        
+        emailLogin.addEventListener('click', () => {
+            if (currentUser) {
+                // User is already logged in, show logout option
+                if (confirm('Do you want to logout?')) {
+                    localStorage.removeItem('freeFireUser');
+                    currentUser = null;
+                    isAdmin = false;
+                    adminToggle.style.display = 'none';
+                    showScreen(loginScreen);
+                }
+            } else {
+                // Show email login form (simplified for demo)
+                showScreen(usernameScreen);
+            }
+        });
+        
+        guestLogin.addEventListener('click', () => {
+            if (currentUser) {
+                // User is already logged in, show logout option
+                if (confirm('Do you want to logout?')) {
+                    localStorage.removeItem('freeFireUser');
+                    currentUser = null;
+                    isAdmin = false;
+                    adminToggle.style.display = 'none';
+                    showScreen(loginScreen);
+                }
+            } else {
+                showScreen(usernameScreen);
+            }
+        });
+        
+        // Username confirmation
+        confirmUsername.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            
+            if (username.length < 3) {
+                usernameError.textContent = "Username must be at least 3 characters long.";
+                usernameError.style.display = 'block';
+                return;
+            }
+            
+            if (takenUsernames.includes(username.toLowerCase())) {
+                usernameError.textContent = "Username already taken. Please choose another one.";
+                usernameError.style.display = 'block';
+                return;
+            }
+            
+            // Create user account
+            currentUser = {
+                username: username,
+                loginMethod: 'guest'
+            };
+            
+            localStorage.setItem('freeFireUser', JSON.stringify(currentUser));
+            displayUsername.textContent = currentUser.username;
+            showScreen(lobbyScreen);
+        });
+        
+        // Start game
+        startGame.addEventListener('click', () => {
+            showScreen(gameScreen);
+        });
+        
+        // Logout from lobby
+        lobbyLogout.addEventListener('click', () => {
+            if (confirm('Do you want to logout?')) {
+                localStorage.removeItem('freeFireUser');
+                currentUser = null;
+                isAdmin = false;
+                adminToggle.style.display = 'none';
+                showScreen(loginScreen);
+            }
+        });
+        
+        // Admin panel toggle
+        adminToggle.addEventListener('click', () => {
+            if (isAdmin) {
+                adminPanel.classList.add('active');
+            }
+        });
+        
+        closeAdmin.addEventListener('click', () => {
+            adminPanel.classList.remove('active');
+        });
+        
+        // Initialize the game
+        window.addEventListener('DOMContentLoaded', () => {
+            simulateLoading();
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

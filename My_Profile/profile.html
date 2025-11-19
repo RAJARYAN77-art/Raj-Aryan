@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: black;
+            color: #00FF00;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: black;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #00FF00;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .nav-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00FF00;
+            text-shadow: 0 0 10px #00FF00;
+        }
+
+        .nav-user {
+            color: #00FF00;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #00FF00;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            margin-left: 15px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #00cc00;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #00FF00;
+            text-shadow: 0 0 10px #00FF00;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border: 1px solid #00FF00;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #00FF00;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #00FF00;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-brand {
+                font-size: 20px;
+            }
+            
+            .welcome-title {
+                font-size: 28px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">PORTFOLIO SYSTEM</div>
+        <div class="nav-user">
+            <span id="userWelcome">Welcome, User</span>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <section class="welcome-section">
+            <h1 class="welcome-title" id="welcomeTitle">SYSTEM DASHBOARD</h1>
+            <p class="welcome-text">
+                Access granted to secure portfolio system. All systems operational.
+            </p>
+            <div class="user-info" id="userInfo">
+                <!-- User information will be loaded here -->
+            </div>
+        </section>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">High Performance</h3>
+                <p>Optimized for speed and efficiency with cutting-edge technology.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Secure Access</h3>
+                <p>Military-grade encryption and authentication protocols.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-title">Cross-Platform</h3>
+                <p>Access your portfolio from any device, anywhere in the world.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication System (Same as login page)
+        class AuthSystem {
+            constructor() {
+                this.usersKey = 'portfolio_users';
+                this.sessionKey = 'user_session';
+            }
+
+            getSession() {
+                try {
+                    return JSON.parse(sessionStorage.getItem(this.sessionKey));
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            isAuthenticated() {
+                const session = this.getSession();
+                return !!(session && session.isAuthenticated);
+            }
+
+            logout() {
+                sessionStorage.removeItem(this.sessionKey);
+                window.location.href = 'login.html';
+            }
+        }
+
+        const auth = new AuthSystem();
+
+        // Matrix Rain Background
+        (() => {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+            const fontSize = 16;
+            let columns = Math.floor(canvas.width / fontSize);
+            let drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+            window.addEventListener('resize', () => {
+                columns = Math.floor(canvas.width / fontSize);
+                drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+            });
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF00';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+                    drops[i] += 2;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        })();
+
+        // Page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            // Load user data
+            const session = auth.getSession();
+            if (session) {
+                document.getElementById('userWelcome').textContent = `Welcome, ${session.name}`;
+                document.getElementById('welcomeTitle').textContent = `WELCOME, ${session.name.toUpperCase()}`;
+                
+                const userInfo = document.getElementById('userInfo');
+                userInfo.innerHTML = `
+                    <h3>USER PROFILE</h3>
+                    <p><strong>Name:</strong> ${session.name}</p>
+                    <p><strong>Email:</strong> ${session.email}</p>
+                    <p><strong>Age:</strong> ${session.age}</p>
+                    <p><strong>Login Time:</strong> ${new Date(session.loginTime).toLocaleString()}</p>
+                    <p><strong>Session ID:</strong> ${session.sessionId}</p>
+                `;
+            }
+        });
+
+        function logout() {
+            auth.logout();
+        }
+    </script>
+</body>
+</html>

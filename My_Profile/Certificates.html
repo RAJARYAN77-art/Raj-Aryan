@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificates | Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="logiinRequired.js"></script>
+</head>
+
+<body>
+  <!-- 🔰 MATRIX RAIN BACKGROUND — paste this before </body> -->
+  <canvas id="matrix-bg"></canvas>
+
+  <style>
+    /* Keep the canvas fixed behind everything */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      /* stay behind website content */
+      background: black;
+      pointer-events: none;
+      /* allow clicks through it */
+    }
+  </style>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('matrix-bg');
+      const ctx = canvas.getContext('2d');
+
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+      const fontSize = 16;
+      let columns = Math.floor(canvas.width / fontSize);
+      const drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'; // trail fade
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00FF00';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          // reset drop randomly after it leaves screen
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+          drops[i] += 2; // ← speed (increase for faster)
+        }
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+  </script>
+  <!-- 🔰 End MATRIX RAIN BACKGROUND -->
+
+  <div id="RajAryan">
+    <h1>You want to verify this all the Certificates click here to <a
+        href="https://cybermindspace.com/certificate-verification/">verify </a> </h1>
+    <img src="Raj Aryan.png" alt="button">
+    <img src="Raj Aryan (1).png" alt="button">
+
+  </div>
+  <footer>
+    <div class="footer-content">
+      <div ass="footer-column">
+        <div class="footer-column">
+          <h3>Portfolio</h3>
+          <p>These all Certificates are real or no p please feedback.</p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="Certificates.html">My Certificates</a></li>
+          <li><a href="My_Tools.html">My Projects</a></li>
+          <li><a href="My_Study.html">My study</a></li>
+          <li><a href="html.html">Hacker Style</a></li>
+          <li><a href="linktree.html">Contact Me</a></li>
+          <li><a href="about.html">About Me</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="linktree.html">Help Center</a></li>
+          <li><a href="linktree.html">Community</a></li>
+          <li><a href="linktree.html">FAQs</a></li>
+          <li><a href="linktree.html">Contact Us</a></li>
+          <li><a href="linktree.html">LinkTree</a></li>
+        </ul>
+      </div>
+    </div>
+</body>
+
+</html>

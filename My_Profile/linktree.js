@@ -1,0 +1,1 @@
+alert("✅ LinkTree page loaded successfully!");
