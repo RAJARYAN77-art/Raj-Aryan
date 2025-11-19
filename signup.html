@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Portfolio</title>
+    <style>
+        /* Your existing CSS remains the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: black;
+            color: #00FF00;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: black;
+            pointer-events: none;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+            to { box-shadow: 0 0 40px rgba(0, 255, 0, 0.6); }
+        }
+
+        .signup-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00FF00;
+            font-size: 28px;
+            text-shadow: 0 0 10px #00FF00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #00FF00;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: rgba(0, 255, 0, 0.6);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00FF00;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .signup-btn:hover {
+            background: #00cc00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .signup-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #00FF00;
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #00FF00;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00FF00;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            text-shadow: 0 0 5px #ff4444;
+            font-family: 'Courier New', monospace;
+        }
+
+        .success-message {
+            color: #00FF00;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            text-shadow: 0 0 5px #00FF00;
+            font-family: 'Courier New', monospace;
+        }
+
+        .captcha-container {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #00FF00;
+        }
+
+        .captcha-text {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #00FF00;
+            letter-spacing: 3px;
+        }
+
+        .captcha-refresh {
+            background: none;
+            border: none;
+            color: #00FF00;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s;
+            padding: 5px;
+        }
+
+        .captcha-refresh:hover {
+            transform: rotate(180deg);
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 8px;
+            background: rgba(0, 255, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s;
+        }
+
+        .strength-weak {
+            background-color: #ff4444;
+        }
+
+        .strength-medium {
+            background-color: #ffaa00;
+        }
+
+        .strength-strong {
+            background-color: #00FF00;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .signup-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="signup-container">
+        <h2 class="signup-title">REQUEST ACCESS</h2>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label" for="signup-name">Full Name</label>
+                <input type="text" class="form-input" id="signup-name" placeholder="Enter your full name" required>
+                <div class="error-message" id="signup-name-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="signup-age">Age</label>
+                <input type="number" class="form-input" id="signup-age" placeholder="Enter your age" min="13" max="100" required>
+                <div class="error-message" id="signup-age-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="signup-email">Email Address</label>
+                <input type="email" class="form-input" id="signup-email" placeholder="user@domain.com" required>
+                <div class="error-message" id="signup-email-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="signup-password">Password</label>
+                <input type="password" class="form-input" id="signup-password" placeholder="Create a password" required>
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="password-strength-bar"></div>
+                </div>
+                <div class="error-message" id="signup-password-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="signup-confirm-password">Confirm Password</label>
+                <input type="password" class="form-input" id="signup-confirm-password" placeholder="Confirm your password" required>
+                <div class="error-message" id="signup-confirm-password-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="captcha-container">
+                    <div class="captcha-text" id="signup-captcha-text">7 + 4</div>
+                    <button type="button" class="captcha-refresh" id="signup-captcha-refresh">
+                        ↻
+                    </button>
+                </div>
+                <input type="text" class="form-input" id="signup-captcha-input" placeholder="Enter the result" required>
+                <div class="error-message" id="signup-captcha-error"></div>
+            </div>
+            
+            <button type="submit" class="signup-btn">CREATE ACCOUNT</button>
+        </form>
+        
+        <div class="form-footer">
+            Already have an account? <a href="login.html">Login Here</a>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Background
+        (() => {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+            const fontSize = 16;
+            let columns = Math.floor(canvas.width / fontSize);
+            let drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+            window.addEventListener('resize', () => {
+                columns = Math.floor(canvas.width / fontSize);
+                drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+            });
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF00';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+                    drops[i] += 2;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        })();
+
+        // Enhanced Signup Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signupForm');
+            const captchaText = document.getElementById('signup-captcha-text');
+            const captchaRefresh = document.getElementById('signup-captcha-refresh');
+            const captchaInput = document.getElementById('signup-captcha-input');
+            const passwordInput = document.getElementById('signup-password');
+            const passwordStrengthBar = document.getElementById('password-strength-bar');
+
+            // Check if user is already logged in
+            function checkExistingSession() {
+                const currentUser = JSON.parse(sessionStorage.getItem('user'));
+                if (currentUser && currentUser.isAuthenticated) {
+                    // User is already logged in, redirect to home
+                    window.location.href = 'index.html';
+                    return true;
+                }
+                return false;
+            }
+
+            // Generate simple math captcha
+            function generateCaptcha() {
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                return {
+                    text: `${num1} + ${num2}`,
+                    answer: num1 + num2
+                };
+            }
+
+            let currentCaptcha = generateCaptcha();
+            captchaText.textContent = currentCaptcha.text;
+
+            // Refresh captcha
+            captchaRefresh.addEventListener('click', () => {
+                currentCaptcha = generateCaptcha();
+                captchaText.textContent = currentCaptcha.text;
+                captchaInput.value = '';
+            });
+
+            // Password strength indicator
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/\d/)) strength++;
+                if (password.match(/[^a-zA-Z\d]/)) strength++;
+                
+                return strength;
+            }
+
+            function updatePasswordStrength() {
+                const password = passwordInput.value;
+                const strength = checkPasswordStrength(password);
+                
+                let width = 0;
+                let colorClass = '';
+                
+                if (password.length === 0) {
+                    width = 0;
+                } else if (strength <= 1) {
+                    width = 25;
+                    colorClass = 'strength-weak';
+                } else if (strength <= 2) {
+                    width = 50;
+                    colorClass = 'strength-medium';
+                } else if (strength <= 3) {
+                    width = 75;
+                    colorClass = 'strength-medium';
+                } else {
+                    width = 100;
+                    colorClass = 'strength-strong';
+                }
+                
+                passwordStrengthBar.style.width = `${width}%`;
+                passwordStrengthBar.className = 'password-strength-bar ' + colorClass;
+            }
+
+            passwordInput.addEventListener('input', updatePasswordStrength);
+
+            // Form submission
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('signup-name').value.trim();
+                const age = parseInt(document.getElementById('signup-age').value);
+                const email = document.getElementById('signup-email').value.trim().toLowerCase();
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('signup-confirm-password').value;
+                const captchaAnswer = parseInt(captchaInput.value);
+
+                // Reset errors
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+
+                let isValid = true;
+
+                // Name validation
+                if (!name || name.length < 2) {
+                    document.getElementById('signup-name-error').textContent = 'Valid name required (min 2 characters)';
+                    document.getElementById('signup-name-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Age validation
+                if (!age || age < 13 || age > 100) {
+                    document.getElementById('signup-age-error').textContent = 'Age must be between 13 and 100';
+                    document.getElementById('signup-age-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Email validation
+                if (!email || !validateEmail(email)) {
+                    document.getElementById('signup-email-error').textContent = 'Valid email required';
+                    document.getElementById('signup-email-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Password validation
+                if (!password || password.length < 6) {
+                    document.getElementById('signup-password-error').textContent = 'Password must be at least 6 characters';
+                    document.getElementById('signup-password-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Confirm password validation
+                if (password !== confirmPassword) {
+                    document.getElementById('signup-confirm-password-error').textContent = 'Passwords do not match';
+                    document.getElementById('signup-confirm-password-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Captcha validation
+                if (isNaN(captchaAnswer) || captchaAnswer !== currentCaptcha.answer) {
+                    document.getElementById('signup-captcha-error').textContent = 'Incorrect captcha answer';
+                    document.getElementById('signup-captcha-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Get existing users from localStorage
+                    const users = JSON.parse(localStorage.getItem('portfolio_users')) || [];
+                    
+                    // Check if email already exists (case insensitive)
+                    const existingUser = users.find(user => user.email.toLowerCase() === email);
+                    if (existingUser) {
+                        document.getElementById('signup-email-error').textContent = 'Email already registered. Please use a different email or login.';
+                        document.getElementById('signup-email-error').style.display = 'block';
+                        return;
+                    }
+
+                    // Create new user
+                    const newUser = {
+                        name: name,
+                        age: age,
+                        email: email,
+                        password: password,
+                        joinDate: new Date().toISOString()
+                    };
+
+                    // Add to users array
+                    users.push(newUser);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('portfolio_users', JSON.stringify(users));
+                    
+                    // Auto-login the user
+                    const userData = {
+                        name: name,
+                        email: email,
+                        age: age,
+                        loginTime: new Date().toISOString(),
+                        isAuthenticated: true
+                    };
+                    
+                    // Store user session
+                    sessionStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'success-message';
+                    successMsg.textContent = 'Account created successfully! Redirecting...';
+                    successMsg.style.display = 'block';
+                    signupForm.appendChild(successMsg);
+                    
+                    // Redirect to home page after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+            });
+
+            // Email validation helper
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            // Check for existing session on page load
+            checkExistingSession();
+
+            // Auto-focus on name input
+            document.getElementById('signup-name').focus();
+        });
+    </script>
+    
+</body>
+</html>

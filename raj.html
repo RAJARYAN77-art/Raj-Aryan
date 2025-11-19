@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Max | Portfolio Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .profile-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #ffcc00;
+            margin-bottom: 30px;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffcc00;
+            font-size: 16px;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .loading-bar-container {
+            width: 80%;
+            max-width: 500px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffcc00, #ff6600);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+        
+        .internet-speed {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* Login Screen */
+        #login-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+        }
+        
+        .game-logo {
+            font-size: 48px;
+            color: #ffcc00;
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 300px;
+        }
+        
+        .login-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .facebook-btn {
+            background: #3b5998;
+            color: white;
+        }
+        
+        .email-btn {
+            background: #ff6600;
+            color: white;
+        }
+        
+        .guest-btn {
+            background: #333;
+            color: white;
+        }
+        
+        .login-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+        
+        /* Username Selection */
+        #username-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 80;
+        }
+        
+        .username-form {
+            background: rgba(30, 30, 60, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .username-form h2 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+        
+        .username-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 16px;
+        }
+        
+        .confirm-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .confirm-btn:hover {
+            background: #ff8800;
+            transform: scale(1.05);
+        }
+        
+        .error-message {
+            color: #ff3333;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Lobby Screen */
+        #lobby-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            display: none;
+            flex-direction: column;
+            z-index: 70;
+        }
+        
+        .lobby-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(0,0,0,0.7);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffcc00;
+        }
+        
+        .logout-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .lobby-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #ffcc00, #ff6600);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(30, 30, 60, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        /* Game Screen */
+        #game-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            z-index: 60;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.7);
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            position: relative;
+        }
+        
+        .game-profile-photo {
+            width: 300px;
+            height: 300px;
+            border-radius: 10px;
+            border: 5px solid #ffcc00;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffcc00;
+            font-size: 20px;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .game-loading-bar-container {
+            width: 80%;
+            max-width: 500px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .game-loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffcc00, #ff6600);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .game-loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+        
+        /* Admin Panel */
+        #admin-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .admin-close {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .admin-section {
+            background: rgba(30, 30, 60, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-section h3 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ffcc00;
+            border-radius: 5px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+        }
+        
+        .admin-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .admin-btn:hover {
+            background: #ff8800;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="profile-photo">Your Profile Photo</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loading-bar"></div>
+        </div>
+        <div class="loading-text" id="loading-text">Loading Resources... 0%</div>
+        <div class="internet-speed" id="internet-speed">Checking connection...</div>
+    </div>
+    
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="game-logo">FREE FIRE MAX</div>
+        <div class="login-options">
+            <button class="login-btn facebook-btn" id="facebook-login">Login with Facebook</button>
+            <button class="login-btn email-btn" id="email-login">Login with Email</button>
+            <button class="login-btn guest-btn" id="guest-login">Play as Guest</button>
+        </div>
+    </div>
+    
+    <!-- Username Selection -->
+    <div id="username-screen">
+        <div class="username-form">
+            <h2>Choose Your Username</h2>
+            <input type="text" class="username-input" id="username-input" placeholder="Enter username">
+            <button class="confirm-btn" id="confirm-username">Confirm</button>
+            <div class="error-message" id="username-error">Username already taken. Please choose another.</div>
+        </div>
+    </div>
+    
+    <!-- Lobby Screen -->
+    <div id="lobby-screen">
+        <div class="lobby-header">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div>
+                    <div id="username-display">Username</div>
+                    <div id="user-level">Level 1</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="lobby-logout">Logout</button>
+        </div>
+        <div class="lobby-content">
+            <button class="start-btn" id="start-game">START</button>
+            <div class="game-stats">
+                <div class="stat-box">
+                    <div>Matches</div>
+                    <div id="matches-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div>Kills</div>
+                    <div id="kills-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div>Wins</div>
+                    <div id="wins-count">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Screen -->
+    <div id="game-screen">
+        <div class="game-header">
+            <div class="user-info">
+                <div class="user-avatar">U</div>
+                <div id="game-username">Username</div>
+            </div>
+            <button class="logout-btn" id="game-logout">Exit</button>
+        </div>
+        <div class="game-content">
+            <div class="game-profile-photo">Your Profile Photo</div>
+            <div class="game-loading-bar-container">
+                <div class="game-loading-bar" id="game-loading-bar"></div>
+            </div>
+            <div class="game-loading-text" id="game-loading-text">Loading Game... 0%</div>
+        </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div id="admin-panel">
+        <div class="admin-header">
+            <h2>Admin Panel</h2>
+            <button class="admin-close" id="close-admin">Close</button>
+        </div>
+        
+        <div class="admin-section">
+            <h3>Loading Screen Settings</h3>
+            <input type="text" class="admin-input" id="loading-photo-text" placeholder="Loading screen photo text">
+            <button class="admin-btn" id="update-loading">Update Loading Screen</button>
+        </div>
+        
+        <div class="admin-section">
+            <h3>Game Screen Settings</h3>
+            <input type="text" class="admin-input" id="game-photo-text" placeholder="Game screen photo text">
+            <button class="admin-btn" id="update-game">Update Game Screen</button>
+        </div>
+        
+        <div class="admin-section">
+            <h3>User Management</h3>
+            <button class="admin-btn" id="reset-users">Reset All Users</button>
+            <button class="admin-btn" id="view-users">View All Users</button>
+        </div>
+        
+        <div class="admin-section">
+            <h3>Game Updates</h3>
+            <input type="text" class="admin-input" id="update-title" placeholder="Update title">
+            <textarea class="admin-input" id="update-details" placeholder="Update details" rows="4"></textarea>
+            <button class="admin-btn" id="publish-update">Publish Update</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const loginScreen = document.getElementById('login-screen');
+        const usernameScreen = document.getElementById('username-screen');
+        const lobbyScreen = document.getElementById('lobby-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        const loadingBar = document.getElementById('loading-bar');
+        const loadingText = document.getElementById('loading-text');
+        const internetSpeed = document.getElementById('internet-speed');
+        
+        const facebookLogin = document.getElementById('facebook-login');
+        const emailLogin = document.getElementById('email-login');
+        const guestLogin = document.getElementById('guest-login');
+        
+        const usernameInput = document.getElementById('username-input');
+        const confirmUsername = document.getElementById('confirm-username');
+        const usernameError = document.getElementById('username-error');
+        
+        const usernameDisplay = document.getElementById('username-display');
+        const userAvatar = document.getElementById('user-avatar');
+        const startGame = document.getElementById('start-game');
+        const lobbyLogout = document.getElementById('lobby-logout');
+        
+        const gameLoadingBar = document.getElementById('game-loading-bar');
+        const gameLoadingText = document.getElementById('game-loading-text');
+        const gameLogout = document.getElementById('game-logout');
+        const gameUsername = document.getElementById('game-username');
+        
+        const closeAdmin = document.getElementById('close-admin');
+        const updateLoading = document.getElementById('update-loading');
+        const updateGame = document.getElementById('update-game');
+        const resetUsers = document.getElementById('reset-users');
+        const viewUsers = document.getElementById('view-users');
+        const publishUpdate = document.getElementById('publish-update');
+        
+        // Game State
+        let currentUser = null;
+        let isAdmin = false;
+        let usedUsernames = JSON.parse(localStorage.getItem('usedUsernames')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || {};
+        
+        // Simulate internet speed check
+        function checkInternetSpeed() {
+            const speeds = ['Slow', 'Medium', 'Fast', 'Very Fast'];
+            const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            internetSpeed.textContent = `Internet Speed: ${randomSpeed}`;
+        }
+        
+        // Simulate loading progress
+        function simulateLoading(barElement, textElement, callback) {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    if (callback) callback();
+                }
+                
+                barElement.style.width = `${progress}%`;
+                textElement.textContent = `Loading ${textElement === loadingText ? 'Resources' : 'Game'}... ${Math.round(progress)}%`;
+            }, 200);
+        }
+        
+        // Show screen function
+        function showScreen(screen) {
+            // Hide all screens
+            loadingScreen.style.display = 'none';
+            loginScreen.style.display = 'none';
+            usernameScreen.style.display = 'none';
+            lobbyScreen.style.display = 'none';
+            gameScreen.style.display = 'none';
+            adminPanel.style.display = 'none';
+            
+            // Show the requested screen
+            screen.style.display = 'flex';
+        }
+        
+        // Check if user is logged in
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                usernameDisplay.textContent = currentUser.username;
+                gameUsername.textContent = currentUser.username;
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                
+                // Check if admin
+                if (currentUser.facebookId === '61577171355837') {
+                    isAdmin = true;
+                }
+                
+                showScreen(lobbyScreen);
+            } else {
+                showScreen(loginScreen);
+            }
+        }
+        
+        // Initialize the game
+        function init() {
+            // Start loading simulation
+            simulateLoading(loadingBar, loadingText, () => {
+                setTimeout(() => {
+                    checkLoginStatus();
+                }, 500);
+            });
+            
+            // Check internet speed periodically
+            checkInternetSpeed();
+            setInterval(checkInternetSpeed, 3000);
+        }
+        
+        // Login event handlers
+        facebookLogin.addEventListener('click', () => {
+            // In a real app, this would integrate with Facebook SDK
+            // For demo, we'll simulate a Facebook login
+            const facebookId = 'demo_' + Math.random().toString(36).substring(2, 9);
+            
+            // Check if this is the admin account
+            if (facebookId === '61577171355837') {
+                isAdmin = true;
+                alert('Welcome Admin! You have special privileges.');
+            }
+            
+            // Check if user exists
+            if (users[facebookId]) {
+                currentUser = users[facebookId];
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                usernameDisplay.textContent = currentUser.username;
+                gameUsername.textContent = currentUser.username;
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                showScreen(lobbyScreen);
+            } else {
+                // New user, need to choose username
+                currentUser = { facebookId, username: null };
+                showScreen(usernameScreen);
+            }
+        });
+        
+        emailLogin.addEventListener('click', () => {
+            alert('Email login would be implemented in a real application');
+        });
+        
+        guestLogin.addEventListener('click', () => {
+            const guestId = 'guest_' + Math.random().toString(36).substring(2, 9);
+            
+            // Check if user exists (unlikely for guest)
+            if (users[guestId]) {
+                currentUser = users[guestId];
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                usernameDisplay.textContent = currentUser.username;
+                gameUsername.textContent = currentUser.username;
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                showScreen(lobbyScreen);
+            } else {
+                // New guest user, need to choose username
+                currentUser = { guestId, username: null };
+                showScreen(usernameScreen);
+            }
+        });
+        
+        // Username selection
+        confirmUsername.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            
+            if (username.length < 3) {
+                usernameError.textContent = 'Username must be at least 3 characters long';
+                usernameError.style.display = 'block';
+                return;
+            }
+            
+            if (usedUsernames.includes(username.toLowerCase())) {
+                usernameError.textContent = 'Username already taken. Please choose another.';
+                usernameError.style.display = 'block';
+                return;
+            }
+            
+            // Username is available
+            currentUser.username = username;
+            usedUsernames.push(username.toLowerCase());
+            
+            // Save user
+            const userId = currentUser.facebookId || currentUser.guestId;
+            users[userId] = currentUser;
+            
+            localStorage.setItem('usedUsernames', JSON.stringify(usedUsernames));
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            usernameDisplay.textContent = currentUser.username;
+            gameUsername.textContent = currentUser.username;
+            userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+            
+            showScreen(lobbyScreen);
+        });
+        
+        // Start game
+        startGame.addEventListener('click', () => {
+            showScreen(gameScreen);
+            simulateLoading(gameLoadingBar, gameLoadingText, () => {
+                // Game loaded, would typically start the actual game here
+                setTimeout(() => {
+                    alert('Game would start now in a real implementation!');
+                }, 500);
+            });
+        });
+        
+        // Logout functionality
+        lobbyLogout.addEventListener('click', () => {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            isAdmin = false;
+            showScreen(loginScreen);
+        });
+        
+        gameLogout.addEventListener('click', () => {
+            showScreen(lobbyScreen);
+        });
+        
+        // Admin functionality
+        if (isAdmin) {
+            // Add admin button to lobby
+            const adminButton = document.createElement('button');
+            adminButton.textContent = 'Admin Panel';
+            adminButton.className = 'admin-btn';
+            adminButton.style.marginLeft = '10px';
+            adminButton.addEventListener('click', () => {
+                showScreen(adminPanel);
+            });
+            
+            document.querySelector('.lobby-header .user-info').appendChild(adminButton);
+        }
+        
+        // Admin panel functionality
+        closeAdmin.addEventListener('click', () => {
+            showScreen(lobbyScreen);
+        });
+        
+        updateLoading.addEventListener('click', () => {
+            const newText = document.getElementById('loading-photo-text').value;
+            if (newText) {
+                document.querySelector('.profile-photo').textContent = newText;
+                alert('Loading screen updated!');
+            }
+        });
+        
+        updateGame.addEventListener('click', () => {
+            const newText = document.getElementById('game-photo-text').value;
+            if (newText) {
+                document.querySelector('.game-profile-photo').textContent = newText;
+                alert('Game screen updated!');
+            }
+        });
+        
+        resetUsers.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all users? This cannot be undone.')) {
+                localStorage.removeItem('users');
+                localStorage.removeItem('usedUsernames');
+                users = {};
+                usedUsernames = [];
+                alert('All users have been reset.');
+            }
+        });
+        
+        viewUsers.addEventListener('click', () => {
+            alert(`Total registered users: ${Object.keys(users).length}`);
+        });
+        
+        publishUpdate.addEventListener('click', () => {
+            const title = document.getElementById('update-title').value;
+            const details = document.getElementById('update-details').value;
+            
+            if (title && details) {
+                alert(`Update published:\n\nTitle: ${title}\nDetails: ${details}`);
+                document.getElementById('update-title').value = '';
+                document.getElementById('update-details').value = '';
+            } else {
+                alert('Please fill in both title and details for the update.');
+            }
+        });
+        
+        // Initialize the game
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Matrix Hacker Rain — with Start/Stop | portfolio</title>
+  <script src="logiinRequired.js"></script>
+  <style>
+    /* Footer */
+ footer {
+     background-color: var(--darker);
+     padding: 3rem 2rem 1rem;
+     background-color: #0b0b0b;
+ }
+
+ .footer-content {
+     max-width: 1200px;
+     margin: 0 auto;
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     gap: 2rem;
+ }
+
+ .footer-column h3 {
+     color: var(--accent);
+     margin-bottom: 1.5rem;
+     font-size: 1.3rem;
+ }
+
+ .footer-column ul {
+     list-style: none;
+ }
+
+ .footer-column ul li {
+     margin-bottom: 0.8rem;
+ }
+
+ .footer-column a {
+     color: #ccc;
+     text-decoration: none;
+     transition: color 0.3s;
+ }
+
+ .footer-column a:hover {
+     color: var(--primary);
+ }
+
+ .social-icons {
+     display: flex;
+     gap: 1rem;
+     margin-top: 1rem;
+ }
+
+ .social-icons a {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     width: 40px;
+     height: 40px;
+     background: rgba(255, 255, 255, 0.1);
+     border-radius: 50%;
+     transition: all 0.3s;
+ }
+
+ .social-icons a:hover {
+     background: var(--primary);
+     transform: translateY(-3px);
+ }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: black;
+      font-family: monospace;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: black;
+    }
+
+    /* Button styling */
+    #toggleButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 255, 0, 0.15);
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      border-radius: 6px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    #toggleButton:hover {
+      background: rgba(0, 255, 0, 0.3);
+      box-shadow: 0 0 10px #00ff00;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="matrix"></canvas>
+  <button id="toggleButton">Stop</button>
+  <footer>
+    <div class="footer-content">
+      <div ass="footer-column">
+        <div class="footer-column">
+          <h3>Portfolio</h3>
+          <p>How beautyfull portfolio please feedback.</p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="Certificates.html">My Certificates</a></li>
+          <li><a href="My_Tools.html">My Projects</a></li>
+          <li><a href="My_Study.html">My study</a></li>
+          <li><a href="html.html">Hacker Style</a></li>
+          <li><a href="contact.html">Contact Me</a></li>
+          <li><a href="about.html">About Me</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="contact.html">Help Center</a></li>
+          <li><a href="contact.html">Community</a></li>
+          <li><a href="contact.html">FAQs</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+
+        </ul>
+      </div>
+    </div>
+    <script>
+      const canvas = document.getElementById('matrix');
+      const ctx = canvas.getContext('2d');
+      const toggleButton = document.getElementById('toggleButton');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+      const drops = [];
+      let running = true;
+
+      // initialize drops
+      for (let x = 0; x < columns; x++) {
+        drops[x] = Math.random() * canvas.height;
+      }
+
+      function draw() {
+        if (!running) return; // stop drawing if paused
+
+        // semi-transparent background for fading effect
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00FF00';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) {
+            drops[i] = 0;
+          }
+
+          // speed of falling
+          drops[i] += 5;
+        }
+
+        setTimeout(() => {
+          if (running) requestAnimationFrame(draw);
+        }, 20);
+      }
+
+      // start animation loop
+      draw();
+
+      // toggle button logic
+      toggleButton.addEventListener('click', () => {
+        running = !running;
+        toggleButton.textContent = running ? 'Stop' : 'Start';
+        if (running) draw();
+      });
+
+      // handle resize
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    </script>
+</body>
+
+</html>

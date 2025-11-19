@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Algorithm Encryption Tool | My Project | Portfolio</title>
+    <script src="logiinRequired.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Footer */
+        footer {
+            background-color: var(--darker);
+            padding: 3rem 2rem 1rem;
+            background-color: #0b0b0b;
+        }
+
+        footer div .footer-column {
+            color: white;
+        }
+
+        footer div .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        footer div .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        footer div .footer-column ul {
+            list-style: none;
+        }
+
+        footer div .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        footer div .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer div .footer-column a:hover {
+            color: var(--primary);
+        }
+
+        footer div .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        footer div .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        footer div .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .card-header h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .algorithm-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .algorithm-option {
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .algorithm-option:hover {
+            border-color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .algorithm-option.selected {
+            border-color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .algorithm-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .algorithm-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .algorithm-desc {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .drop-zone {
+            border: 2px dashed #ddd;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.active {
+            border-color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .drop-zone i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #bdc3c7;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #bdc3c7;
+        }
+
+        .result-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: var(--radius);
+            padding: 15px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark);
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .security-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .detected-algorithm {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-bottom: 1px solid #ddd;
+                border-left: 3px solid transparent;
+            }
+
+            .tab.active {
+                border-left: 3px solid var(--secondary);
+                border-bottom: 1px solid #ddd;
+            }
+
+            .algorithm-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🔰 MATRIX RAIN BACKGROUND — paste this before </body> -->
+    <canvas id="matrix-bg"></canvas>
+
+    <style>
+        /* Keep the canvas fixed behind everything */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* stay behind website content */
+            background: black;
+            pointer-events: none;
+            /* allow clicks through it */
+        }
+    </style>
+
+    <script>
+        (() => {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+            const fontSize = 16;
+            let columns = Math.floor(canvas.width / fontSize);
+            const drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'; // trail fade
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF00';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    // reset drop randomly after it leaves screen
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+                    drops[i] += 2; // ← speed (increase for faster)
+                }
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        })();
+    </script>
+    <div class="container">
+        <header>
+            <h1>Multi-Algorithm Encryption Tool</h1>
+            <p class="subtitle">Encrypt and decrypt your data using multiple algorithms with auto-detection</p>
+        </header>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" data-tab="encrypt">Encrypt Data</div>
+                <div class="tab" data-tab="decrypt">Decrypt Data</div>
+            </div>
+
+            <div class="tab-content active" id="encrypt-tab">
+                <div class="card-header">
+                    <i class="fas fa-lock"></i>
+                    <h2>Encrypt Your Data</h2>
+                </div>
+
+                <div class="alert alert-success" id="encrypt-success">
+                    <i class="fas fa-check-circle"></i> Data encrypted successfully!
+                </div>
+
+                <div class="alert alert-error" id="encrypt-error">
+                    <i class="fas fa-exclamation-circle"></i> Please fill in all required fields and select an
+                    algorithm.
+                </div>
+
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username">
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password">
+                </div>
+
+                <div class="input-group">
+                    <label>Select Encryption Algorithm</label>
+                    <div class="algorithm-selector">
+                        <div class="algorithm-option" data-algorithm="aes">
+                            <div class="algorithm-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="algorithm-name">AES-256</div>
+                            <div class="algorithm-desc">Advanced Encryption Standard</div>
+                        </div>
+                        <div class="algorithm-option" data-algorithm="des">
+                            <div class="algorithm-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div class="algorithm-name">Triple DES</div>
+                            <div class="algorithm-desc">Data Encryption Standard</div>
+                        </div>
+                        <div class="algorithm-option" data-algorithm="rabbit">
+                            <div class="algorithm-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="algorithm-name">Rabbit</div>
+                            <div class="algorithm-desc">Stream Cipher</div>
+                        </div>
+                        <div class="algorithm-option" data-algorithm="rc4">
+                            <div class="algorithm-icon">
+                                <i class="fas fa-random"></i>
+                            </div>
+                            <div class="algorithm-name">RC4</div>
+                            <div class="algorithm-desc">Stream Cipher</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" id="encrypt-btn">
+                        <i class="fas fa-lock"></i> Encrypt Data
+                    </button>
+                    <button class="btn-secondary" id="reset-encrypt">
+                        <i class="fas fa-redo"></i> Reset Form
+                    </button>
+                </div>
+
+                <div class="result-container" id="encrypt-result">
+                    <div class="result-header">
+                        <h3>Encrypted Result</h3>
+                        <button class="copy-btn" id="copy-encrypted">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="result-box" id="encrypted-output"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="decrypt-tab">
+                <div class="card-header">
+                    <i class="fas fa-lock-open"></i>
+                    <h2>Decrypt Your Data</h2>
+                </div>
+
+                <div class="alert alert-success" id="decrypt-success">
+                    <i class="fas fa-check-circle"></i> Data decrypted successfully!
+                </div>
+
+                <div class="alert alert-error" id="decrypt-error">
+                    <i class="fas fa-exclamation-circle"></i> Decryption failed. Please check your encrypted data.
+                </div>
+
+                <div class="input-group">
+                    <label for="encrypted-data">Encrypted Data</label>
+                    <div class="drop-zone" id="drop-zone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop Encrypted File Here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="file-input" style="display: none;">
+                    </div>
+                    <textarea id="encrypted-data" placeholder="Or paste your encrypted data here"></textarea>
+                </div>
+
+                <div class="detected-algorithm" id="detected-algorithm">
+                    <h3><i class="fas fa-search"></i> Detected Algorithm</h3>
+                    <p id="algorithm-name">Unknown</p>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-success" id="decrypt-btn">
+                        <i class="fas fa-lock-open"></i> Decrypt Data
+                    </button>
+                    <button class="btn-secondary" id="reset-decrypt">
+                        <i class="fas fa-redo"></i> Reset Form
+                    </button>
+                </div>
+
+                <div class="result-container" id="decrypt-result">
+                    <div class="result-header">
+                        <h3>Decrypted Result</h3>
+                        <button class="copy-btn" id="copy-decrypted">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="result-box">
+                        <div><strong>Username:</strong> <span id="decrypted-username"></span></div>
+                        <div><strong>Password:</strong> <span id="decrypted-password"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="security-info">
+                <h3><i class="fas fa-shield-alt"></i> Security Information</h3>
+                <p>This tool uses multiple encryption algorithms to secure your data. All encryption and decryption
+                    happens locally in your browser - your data never leaves your device.</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Multi-Algorithm Encryption Tool &copy; 2023 | All encryption happens locally in your browser</p>
+            <footer>
+                <div class="footer-content">
+                    <div ass="footer-column">
+                        <div class="footer-column">
+                            <h3>Portfolio</h3>
+                            <p>How beautyfull Tools please feedback.</p>
+                            <div class="social-icons">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                <a href="#"><i class="fab fa-discord"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="Certificates.html">My Certificates</a></li>
+                            <li><a href="My_Tools.html">My Projects</a></li>
+                            <li><a href="My_Study.html">My study</a></li>
+                            <li><a href="html.html">Hacker Style</a></li>
+                            <li><a href="linktree.html">Contact Me</a></li>
+                            <li><a href="about.html">About Me</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Support</h3>
+                        <ul>
+                            <li><a href="linktree.html">Help Center</a></li>
+                            <li><a href="linktree.html">Community</a></li>
+                            <li><a href="linktree.html">FAQs</a></li>
+                            <li><a href="linktree.html">Contact Us</a></li>
+                            <li><a href="linktree.html">LinkTree</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let selectedAlgorithm = 'aes';
+
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const tabId = this.getAttribute('data-tab');
+
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show active tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Algorithm selection
+            const algorithmOptions = document.querySelectorAll('.algorithm-option');
+            algorithmOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    algorithmOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedAlgorithm = this.getAttribute('data-algorithm');
+                });
+            });
+
+            // Set default selected algorithm
+            document.querySelector('.algorithm-option[data-algorithm="aes"]').classList.add('selected');
+
+            // Drop zone functionality
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('active');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('active');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('active');
+
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    readFile(file);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    readFile(e.target.files[0]);
+                }
+            });
+
+            function readFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('encrypted-data').value = e.target.result;
+                    // Try to detect algorithm
+                    detectAlgorithm(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+
+            // Encrypt function
+            document.getElementById('encrypt-btn').addEventListener('click', function () {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Validation
+                if (!username || !password) {
+                    document.getElementById('encrypt-error').style.display = 'block';
+                    document.getElementById('encrypt-success').style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('encrypt-error').style.display = 'none';
+
+                // Encrypt data based on selected algorithm
+                const data = JSON.stringify({ username, password });
+                let encryptedData;
+
+                switch (selectedAlgorithm) {
+                    case 'aes':
+                        encryptedData = encryptAES(data);
+                        break;
+                    case 'des':
+                        encryptedData = encryptDES(data);
+                        break;
+                    case 'rabbit':
+                        encryptedData = encryptRabbit(data);
+                        break;
+                    case 'rc4':
+                        encryptedData = encryptRC4(data);
+                        break;
+                    default:
+                        encryptedData = encryptAES(data);
+                }
+
+                // Add algorithm identifier
+                encryptedData = `${selectedAlgorithm.toUpperCase()}:${encryptedData}`;
+
+                // Display result
+                document.getElementById('encrypted-output').textContent = encryptedData;
+                document.getElementById('encrypt-result').style.display = 'block';
+                document.getElementById('encrypt-success').style.display = 'block';
+            });
+
+            // Decrypt function
+            document.getElementById('decrypt-btn').addEventListener('click', function () {
+                let encryptedData = document.getElementById('encrypted-data').value;
+
+                // Validation
+                if (!encryptedData) {
+                    document.getElementById('decrypt-error').style.display = 'block';
+                    document.getElementById('decrypt-success').style.display = 'none';
+                    return;
+                }
+
+                try {
+                    // Extract algorithm identifier and data
+                    const colonIndex = encryptedData.indexOf(':');
+                    if (colonIndex === -1) {
+                        throw new Error('Invalid encrypted data format');
+                    }
+
+                    const algorithm = encryptedData.substring(0, colonIndex).toLowerCase();
+                    const data = encryptedData.substring(colonIndex + 1);
+
+                    let decryptedData;
+
+                    switch (algorithm) {
+                        case 'aes':
+                            decryptedData = decryptAES(data);
+                            break;
+                        case 'des':
+                            decryptedData = decryptDES(data);
+                            break;
+                        case 'rabbit':
+                            decryptedData = decryptRabbit(data);
+                            break;
+                        case 'rc4':
+                            decryptedData = decryptRC4(data);
+                            break;
+                        default:
+                            throw new Error('Unknown encryption algorithm');
+                    }
+
+                    const credentials = JSON.parse(decryptedData);
+
+                    // Display result
+                    document.getElementById('decrypted-username').textContent = credentials.username;
+                    document.getElementById('decrypted-password').textContent = credentials.password;
+                    document.getElementById('decrypt-result').style.display = 'block';
+                    document.getElementById('decrypt-success').style.display = 'block';
+                    document.getElementById('decrypt-error').style.display = 'none';
+
+                    // Show detected algorithm
+                    document.getElementById('algorithm-name').textContent = algorithm.toUpperCase();
+                    document.getElementById('detected-algorithm').style.display = 'block';
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('decrypt-error').style.display = 'block';
+                    document.getElementById('decrypt-success').style.display = 'none';
+                    document.getElementById('detected-algorithm').style.display = 'none';
+                }
+            });
+
+            // Algorithm detection for pasted data
+            document.getElementById('encrypted-data').addEventListener('input', function () {
+                if (this.value) {
+                    detectAlgorithm(this.value);
+                } else {
+                    document.getElementById('detected-algorithm').style.display = 'none';
+                }
+            });
+
+            function detectAlgorithm(data) {
+                try {
+                    const colonIndex = data.indexOf(':');
+                    if (colonIndex === -1) return;
+
+                    const algorithm = data.substring(0, colonIndex).toLowerCase();
+                    const validAlgorithms = ['aes', 'des', 'rabbit', 'rc4'];
+
+                    if (validAlgorithms.includes(algorithm)) {
+                        document.getElementById('algorithm-name').textContent = algorithm.toUpperCase();
+                        document.getElementById('detected-algorithm').style.display = 'block';
+                    }
+                } catch (error) {
+                    // Algorithm detection failed
+                }
+            }
+
+            // Reset buttons
+            document.getElementById('reset-encrypt').addEventListener('click', function () {
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('encrypt-result').style.display = 'none';
+                document.getElementById('encrypt-success').style.display = 'none';
+                document.getElementById('encrypt-error').style.display = 'none';
+            });
+
+            document.getElementById('reset-decrypt').addEventListener('click', function () {
+                document.getElementById('encrypted-data').value = '';
+                document.getElementById('decrypt-result').style.display = 'none';
+                document.getElementById('decrypt-success').style.display = 'none';
+                document.getElementById('decrypt-error').style.display = 'none';
+                document.getElementById('detected-algorithm').style.display = 'none';
+                fileInput.value = '';
+            });
+
+            // Copy buttons
+            document.getElementById('copy-encrypted').addEventListener('click', function () {
+                const encryptedOutput = document.getElementById('encrypted-output');
+                copyToClipboard(encryptedOutput.textContent);
+                showCopyFeedback(this, 'Copied!');
+            });
+
+            document.getElementById('copy-decrypted').addEventListener('click', function () {
+                const username = document.getElementById('decrypted-username').textContent;
+                const password = document.getElementById('decrypted-password').textContent;
+                const textToCopy = `Username: ${username}\nPassword: ${password}`;
+                copyToClipboard(textToCopy);
+                showCopyFeedback(this, 'Copied!');
+            });
+
+            // Encryption functions
+            function encryptAES(data) {
+                // In a real application, you would use a secure key derivation method
+                const key = CryptoJS.enc.Utf8.parse('12345678901234567890123456789012'); // 32 bytes
+                const iv = CryptoJS.enc.Utf8.parse('1234567890123456'); // 16 bytes
+
+                const encrypted = CryptoJS.AES.encrypt(data, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                return encrypted.toString();
+            }
+
+            function decryptAES(data) {
+                const key = CryptoJS.enc.Utf8.parse('12345678901234567890123456789012');
+                const iv = CryptoJS.enc.Utf8.parse('1234567890123456');
+
+                const decrypted = CryptoJS.AES.decrypt(data, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                return decrypted.toString(CryptoJS.enc.Utf8);
+            }
+
+            function encryptDES(data) {
+                const key = CryptoJS.enc.Utf8.parse('12345678'); // 8 bytes
+                const iv = CryptoJS.enc.Utf8.parse('12345678'); // 8 bytes
+
+                const encrypted = CryptoJS.TripleDES.encrypt(data, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                return encrypted.toString();
+            }
+
+            function decryptDES(data) {
+                const key = CryptoJS.enc.Utf8.parse('12345678');
+                const iv = CryptoJS.enc.Utf8.parse('12345678');
+
+                const decrypted = CryptoJS.TripleDES.decrypt(data, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                return decrypted.toString(CryptoJS.enc.Utf8);
+            }
+
+            function encryptRabbit(data) {
+                const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // 16 bytes
+                const iv = CryptoJS.enc.Utf8.parse('12345678'); // 8 bytes
+
+                const encrypted = CryptoJS.Rabbit.encrypt(data, key, {
+                    iv: iv
+                });
+
+                return encrypted.toString();
+            }
+
+            function decryptRabbit(data) {
+                const key = CryptoJS.enc.Utf8.parse('1234567890123456');
+                const iv = CryptoJS.enc.Utf8.parse('12345678');
+
+                const decrypted = CryptoJS.Rabbit.decrypt(data, key, {
+                    iv: iv
+                });
+
+                return decrypted.toString(CryptoJS.enc.Utf8);
+            }
+
+            function encryptRC4(data) {
+                const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // 16 bytes
+
+                const encrypted = CryptoJS.RC4.encrypt(data, key);
+
+                return encrypted.toString();
+            }
+
+            function decryptRC4(data) {
+                const key = CryptoJS.enc.Utf8.parse('1234567890123456');
+
+                const decrypted = CryptoJS.RC4.decrypt(data, key);
+
+                return decrypted.toString(CryptoJS.enc.Utf8);
+            }
+
+            // Utility functions
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+
+            function showCopyFeedback(button, message) {
+                const originalText = button.innerHTML;
+                button.innerHTML = `<i class="fas fa-check"></i> ${message}`;
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+
+</html>

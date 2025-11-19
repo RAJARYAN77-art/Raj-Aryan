@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My portfolio | Home</title>
+  <link rel="stylesheet" href="style.css">
+ 
+</head>
+
+<body>
+  <!-- 🔰 MATRIX RAIN BACKGROUND — paste this before </body> -->
+  <canvas id="matrix-bg"></canvas>
+
+  <style>
+    /* Keep the canvas fixed behind everything */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      /* stay behind website content */
+      background: black;
+      pointer-events: none;
+      /* allow clicks through it */
+    }
+
+    /* small style fix for nav so buttons align well */
+    header nav ul {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px;
+      margin: 0;
+      list-style: none;
+      align-items: center;
+    }
+
+    header nav ul a button {
+      cursor: pointer;
+      border-radius: 6px;
+      background:black;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+    }
+
+    /* Profile button style */
+    #nav-profile button {
+      background: black !important;
+    }
+  </style>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('matrix-bg');
+      const ctx = canvas.getContext('2d');
+
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+      const fontSize = 16;
+      let columns = Math.floor(canvas.width / fontSize);
+      let drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+      // Recalculate columns & drops on resize
+      window.addEventListener('resize', () => {
+        columns = Math.floor(canvas.width / fontSize);
+        drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+      });
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'; // trail fade
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00FF00';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          // reset drop randomly after it leaves screen
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+          drops[i] += 2; // ← speed (increase for faster)
+        }
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+  </script>
+  <!-- 🔰 End MATRIX RAIN BACKGROUND -->
+
+  <header>
+    <nav>
+      <!-- Use a UL with id=main-nav to make it easy to modify by script -->
+      <ul id="main-nav">
+        <li><a href="index.html"><button>Home</button></a></li>
+        <li><a href="Certificates.html"><button>Certificates</button></a></li>
+        <li><a href="My_Tools.html"><button>My Projects</button></a></li>
+        <li><a href="My_Study.html"><button>My Study</button></a></li>
+        <li><a href="html.html"><button>Hacker Style</button></a></li>
+        <li><a href="linktree.html"><button>Contact Me</button></a></li>
+        <li><a href="about.html"><button>About</button></a></li>
+
+        <!-- Auth links: will be replaced by Profile if user is logged in -->
+        <li data-auth="login"><a href="login.html"><button>Login</button></a></li>
+        <li data-auth="signup"><a href="signup.html"><button>Signup</button></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Add this in your index.html where you want welcome message -->
+<div id="welcome-message" style="margin-top: 10px; display: none;">
+    <span style="color: #00FF00;">Welcome back, <span id="user-name"></span>!</span>
+</div>
+    <section class="firstSection">
+      <div class="leftSection">
+        Hi, My name is <span class="Purple">Raj Aryan</span>
+        <div>And i am <span class="Purple"> student of cybersecurity</span>.</div>
+        <!-- Display welcome message if user is logged in -->
+        <div id="welcome-message" style="margin-top: 10px; display: none;">
+          <span style="color: #00FF00;">Welcome back, <span id="user-name"></span>!</span>
+        </div>
+      </div>
+
+      <div class="rightSection">
+        <a href="RajAryan.JPG">
+          <img src="RajAryan.JPG" alt="">
+        </a>
+      </div>
+    </section>
+
+    <h3 id="cert">My Certificates</h3>
+    <section class="second">
+      <div class="container">
+        <img src="Raj Aryan (1).png" alt="photo 1" class="photo">
+        <img src="Raj Aryan.png" alt="photo 2" class="photo">
+      </div>
+    </section>
+
+    <section>
+      <div id="password">
+        <h3 class="index_project">My Tools</h3>
+        <a href="Password_generter.html"><button>Password_generter 🔐</button> </a>
+        <a href="malware_detect.html"><button>malware detect</button></a>
+        <a href="phishing.html"><button>Phishing email detector</button> </a>
+        <a href="encrypt.html"><button>encrypt and decrypt</button></a>
+        <h3 class="index_project">My Games</h3>
+        <a href="tic_tac_toe.html"><button>Tic Tac Toe</button></a>
+      </div>
+    </section>
+
+    <div class="study">
+      <h2>My study</h2>
+      <p>what am i know?</p>
+    </div>
+
+    <div id="study2">
+      <p class="Purple">cybersecurity</p>
+      <br>
+      <p class="Purple">Python</p>
+      <br>
+      <p class="Purple">C++</p>
+      <br>
+      <p class="Purple"> HTML</p>
+      <br>
+      <p class="Purple">CSS</p>
+      <div class="Tryhackme">
+        <h3>Number of Tryhackme lab i solved</h3>
+        <p>This my completed tryhackme rooms of number</p>
+        <li>10</li>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <h3>My Dream</h3>
+    <a href="cybersecurity-professional.jpg">
+      <img src="cybersecurity-professional.jpg" alt="dream image">
+    </a>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>Portfolio</h3>
+        <p>How beautiful portfolio please feedback.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-discord"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="Certificates.html">My Certificates</a></li>
+          <li><a href="My_Tools.html">My Projects</a></li>
+          <li><a href="My_Study.html">My study</a></li>
+          <li><a href="html.html">Hacker Style</a></li>
+          <li><a href="linktree.html">Contact Me</a></li>
+          <li><a href="about.html">About Me</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="linktree.html">Help Center</a></li>
+          <li><a href="linktree.html">Community</a></li>
+          <li><a href="linktree.html">FAQs</a></li>
+          <li><a href="linktree.html">Contact Us</a></li>
+          <li><a href="linktree.html">LinkTree</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====== AUTHENTICATION NAV SWITCHING LOGIC ====== -->
+  <script>
+    (function () {
+      function getSessionUser() {
+        try {
+          const raw = sessionStorage.getItem('user');
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function updateAuthNav() {
+        const nav = document.getElementById('main-nav');
+        if (!nav) return;
+
+        const user = getSessionUser();
+
+        // Remove any existing profile items first (avoid duplicates)
+        const existingProfile = document.getElementById('nav-profile');
+        if (existingProfile) existingProfile.remove();
+
+        // Remove default login/signup placeholder entries
+        const dataAuthItems = nav.querySelectorAll('[data-auth]');
+        
+        if (user) {
+          // User is logged in - replace login/signup with profile
+          dataAuthItems.forEach(item => item.remove());
+          
+          // Add profile link
+          const profileLi = document.createElement('li');
+          profileLi.id = 'nav-profile';
+          profileLi.innerHTML = `<a href="profile.html"><button>Profile (${user.name})</button></a>`;
+          nav.appendChild(profileLi);
+
+          // Show welcome message
+          const welcomeMsg = document.getElementById('welcome-message');
+          const userName = document.getElementById('user-name');
+          if (welcomeMsg && userName) {
+            welcomeMsg.style.display = 'block';
+            userName.textContent = user.name;
+          }
+        } else {
+          // User is not logged in - ensure login/signup are visible
+          // They are already in HTML, so we just make sure they're there
+          
+          // Hide welcome message
+          const welcomeMsg = document.getElementById('welcome-message');
+          if (welcomeMsg) {
+            welcomeMsg.style.display = 'none';
+          }
+        }
+      }
+
+      // Run on DOM ready
+      document.addEventListener('DOMContentLoaded', updateAuthNav);
+
+      // Listen for storage changes (login/logout in other tabs)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'user') {
+          updateAuthNav();
+        }
+      });
+
+    })();
+  </script>
+  <!-- ====== END AUTHENTICATION NAV SWITCHING LOGIC ====== -->
+</body>
+
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: black;
+            color: #00FF00;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: black;
+            pointer-events: none;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+            to { box-shadow: 0 0 40px rgba(0, 255, 0, 0.6); }
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00FF00;
+            font-size: 28px;
+            text-shadow: 0 0 10px #00FF00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #00FF00;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: rgba(0, 255, 0, 0.6);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00FF00;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #00cc00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #00FF00;
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #00FF00;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00FF00;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            text-shadow: 0 0 5px #ff4444;
+            font-family: 'Courier New', monospace;
+        }
+
+        .success-message {
+            color: #00FF00;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            text-shadow: 0 0 5px #00FF00;
+            font-family: 'Courier New', monospace;
+        }
+
+        .captcha-container {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #00FF00;
+        }
+
+        .captcha-text {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #00FF00;
+            letter-spacing: 3px;
+        }
+
+        .captcha-refresh {
+            background: none;
+            border: none;
+            color: #00FF00;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s;
+            padding: 5px;
+        }
+
+        .captcha-refresh:hover {
+            transform: rotate(180deg);
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 8px;
+            background: rgba(0, 255, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s;
+        }
+
+        .strength-weak {
+            background-color: #ff4444;
+        }
+
+        .strength-medium {
+            background-color: #ffaa00;
+        }
+
+        .strength-strong {
+            background-color: #00FF00;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .login-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="login-container">
+        <h2 class="login-title">SYSTEM ACCESS</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label" for="login-email">Email Address</label>
+                <input type="email" class="form-input" id="login-email" placeholder="user@domain.com" required>
+                <div class="error-message" id="login-email-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="login-password">Password</label>
+                <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+                <div class="error-message" id="login-password-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="captcha-container">
+                    <div class="captcha-text" id="login-captcha-text">5 + 3</div>
+                    <button type="button" class="captcha-refresh" id="login-captcha-refresh">
+                        ↻
+                    </button>
+                </div>
+                <input type="text" class="form-input" id="login-captcha-input" placeholder="Enter the result" required>
+                <div class="error-message" id="login-captcha-error"></div>
+            </div>
+            
+            <button type="submit" class="login-btn">AUTHENTICATE</button>
+        </form>
+        
+        <div class="form-footer">
+            New user? <a href="signup.html">Request Access</a>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Background
+        (() => {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+            const fontSize = 16;
+            let columns = Math.floor(canvas.width / fontSize);
+            let drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+
+            window.addEventListener('resize', () => {
+                columns = Math.floor(canvas.width / fontSize);
+                drops = new Array(columns).fill(0).map(() => Math.random() * canvas.height);
+            });
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF00';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+                    drops[i] += 2;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        })();
+
+        // Login Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const captchaText = document.getElementById('login-captcha-text');
+            const captchaRefresh = document.getElementById('login-captcha-refresh');
+            const captchaInput = document.getElementById('login-captcha-input');
+
+            // Generate simple math captcha
+            function generateCaptcha() {
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                return {
+                    text: `${num1} + ${num2}`,
+                    answer: num1 + num2
+                };
+            }
+
+            let currentCaptcha = generateCaptcha();
+            captchaText.textContent = currentCaptcha.text;
+
+            // Refresh captcha
+            captchaRefresh.addEventListener('click', () => {
+                currentCaptcha = generateCaptcha();
+                captchaText.textContent = currentCaptcha.text;
+                captchaInput.value = '';
+            });
+
+            // Form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const captchaAnswer = parseInt(captchaInput.value);
+
+                // Reset errors
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+
+                let isValid = true;
+
+                // Email validation
+                if (!email || !email.includes('@')) {
+                    document.getElementById('login-email-error').textContent = 'Valid email required';
+                    document.getElementById('login-email-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Password validation
+                if (!password || password.length < 6) {
+                    document.getElementById('login-password-error').textContent = 'Password must be at least 6 characters';
+                    document.getElementById('login-password-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Captcha validation
+                if (captchaAnswer !== currentCaptcha.answer) {
+                    document.getElementById('login-captcha-error').textContent = 'Incorrect captcha answer';
+                    document.getElementById('login-captcha-error').style.display = 'block';
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Check if user exists in localStorage
+                    const users = JSON.parse(localStorage.getItem('portfolio_users')) || [];
+                    const user = users.find(u => u.email === email && u.password === password);
+                    
+                    if (user) {
+                        // User exists - login successful
+                        const userData = {
+                            name: user.name,
+                            email: user.email,
+                            age: user.age,
+                            loginTime: new Date().toISOString(),
+                            isAuthenticated: true
+                        };
+                        
+                        // Store user session
+                        sessionStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.className = 'success-message';
+                        successMsg.textContent = 'Authentication successful! Redirecting...';
+                        successMsg.style.display = 'block';
+                        loginForm.appendChild(successMsg);
+                        
+                        // Redirect to home page after 1 second
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else {
+                        // User doesn't exist or wrong password
+                        document.getElementById('login-password-error').textContent = 'Invalid email or password';
+                        document.getElementById('login-password-error').style.display = 'block';
+                    }
+                }
+            });
+
+            // Auto-focus on email input
+            document.getElementById('login-email').focus();
+        });
+    </script>
+
+    <!-- Add this to your login.html form submission -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Your existing login validation code...
+        
+        if (isValid) {
+            // Your existing user authentication code...
+            
+            if (user) {
+                // Login successful
+                const userData = {
+                    name: user.name,
+                    email: user.email,
+                    age: user.age,
+                    loginTime: new Date().toISOString(),
+                    isAuthenticated: true
+                };
+                
+                // Use AuthProtection to login
+                if (AuthProtection.login(userData)) {
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'success-message';
+                    successMsg.textContent = 'Authentication successful! Redirecting...';
+                    successMsg.style.display = 'block';
+                    loginForm.appendChild(successMsg);
+                    
+                    // Redirect to intended page
+                    setTimeout(() => {
+                        AuthProtection.redirectAfterLogin();
+                    }, 1000);
+                }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

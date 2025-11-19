@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Call Load Simulator — Educational Only</title>
+<style>
+  :root{--bg:#0f1724;--muted:#9aa7bf;--accent:#06b6d4;--good:#10b981;--bad:#ef4444;}
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,#071021,#07182a);color:#e6eef8}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px}
+  header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#021}
+  h1{margin:0;font-size:20px}
+  p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:16px;margin-top:16px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);padding:14px;border-radius:12px}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input[type=text], input[type=number], select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  .row{display:flex;gap:8px}
+  button{cursor:pointer;padding:10px 12px;border-radius:10px;border:none;background:var(--accent);color:#021;font-weight:600}
+  button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
+  .metrics{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .metric{flex:1;min-width:120px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);text-align:center}
+  .metric .num{font-size:20px;font-weight:700}
+  .metric .lbl{font-size:12px;color:var(--muted);margin-top:4px}
+  .log{height:340px;overflow:auto;margin-top:10px;background:linear-gradient(180deg, rgba(0,0,0,0.2), transparent);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+  table{width:100%;border-collapse:collapse;margin-top:8px;color:var(--muted)}
+  th, td{padding:8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.02);font-size:13px}
+  .status{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
+  .status.ringing{background:rgba(255,255,255,0.03);color:var(--accent)}
+  .status.connected{background:rgba(16,185,129,0.12);color:var(--good)}
+  .status.ended{background:rgba(255,255,255,0.02);color:var(--muted)}
+  .status.failed{background:rgba(239,68,68,0.12);color:var(--bad)}
+  .chart{height:120px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);display:flex;align-items:end;gap:4px;padding:10px}
+  .bar{flex:1;border-radius:6px;display:flex;align-items:end;justify-content:center;color:var(--muted);font-size:11px}
+  footer{margin-top:12px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">SIM</div>
+      <div>
+        <h1>Call Load Simulator — Educational (No real calls)</h1>
+        <p class="lead">Simulates dialing activity and call load in the browser. For learning only.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <label>Target number (simulation only)</label>
+          <input id="target" type="text" value="+91 98765 43210" />
+
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <div style="flex:1">
+              <label>Number of attempts</label>
+              <input id="attempts" type="number" min="1" value="200" />
+            </div>
+            <div style="flex:1">
+              <label>Concurrency</label>
+              <input id="concurrency" type="number" min="1" value="12" />
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <div style="flex:1">
+              <label>Avg call duration (sec)</label>
+              <input id="avgDuration" type="number" min="1" value="30" />
+            </div>
+            <div style="flex:1">
+              <label>Call spread (std dev)</label>
+              <input id="stdDev" type="number" min="0" value="8" />
+            </div>
+          </div>
+
+          <label style="margin-top:10px">Inter-arrival time (ms) — how often new attempts are queued</label>
+          <input id="rate" type="number" min="0" value="100" />
+
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="start">Start Simulation</button>
+            <button id="stop" class="ghost" disabled>Stop</button>
+            <button id="reset" class="ghost">Reset</button>
+            <button id="export" class="ghost">Export CSV</button>
+          </div>
+
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)"><strong>Disclaimer:</strong> This simulator does <em>not</em> send any real calls or network requests. Local only.</div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Live Metrics</strong>
+            <small id="time">00:00:00</small>
+          </div>
+          <div class="metrics">
+            <div class="metric"><div class="num" id="m-total">0</div><div class="lbl">Attempted</div></div>
+            <div class="metric"><div class="num" id="m-active">0</div><div class="lbl">Active</div></div>
+            <div class="metric"><div class="num" id="m-complete">0</div><div class="lbl">Completed</div></div>
+            <div class="metric"><div class="num" id="m-failed">0</div><div class="lbl">Failed</div></div>
+          </div>
+
+          <div style="margin-top:10px">
+            <strong>Rate chart (attempts per second)</strong>
+            <div id="chart" class="chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Call Log (simulated)</strong>
+            <div style="display:flex;gap:8px;align-items:center">
+              <label style="margin:0 8px 0 0;color:var(--muted);font-size:13px">Filter</label>
+              <select id="filter">
+                <option value="all">All</option>
+                <option value="ringing">Ringing</option>
+                <option value="connected">Connected</option>
+                <option value="ended">Ended</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="log" id="log">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Time</th><th>Number</th><th>Duration</th><th>Status</th></tr>
+              </thead>
+              <tbody id="logbody"></tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:10px;display:flex;gap:8px;">
+            <button id="clearLog" class="ghost">Clear Log</button>
+            <button id="sampleLoad" class="ghost">Load Sample Scenario</button>
+            <div style="flex:1"></div>
+            <div style="font-size:12px;color:var(--muted)">Simulated concurrency is capped by the <strong>Concurrency</strong> control.</div>
+          </div>
+        </div>
+
+        <footer>
+          <div>Legal & ethical note: building or using automated calling systems must follow laws and require consent.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* Robust Call Load Simulator - fixes + debug logging */
+(function(){
+  'use strict';
+  // helpers
+  function nowStr(){ return new Date().toLocaleTimeString(); }
+  function randNormal(mean, sd){
+    let u=0,v=0;
+    while(u===0) u=Math.random();
+    while(v===0) v=Math.random();
+    const z=Math.sqrt(-2.0*Math.log(u)) * Math.cos(2*Math.PI*v);
+    return Math.max(0.2, mean + z*sd);
+  }
+
+  // DOM
+  const dom = {
+    start: document.getElementById('start'),
+    stop: document.getElementById('stop'),
+    reset: document.getElementById('reset'),
+    exportBtn: document.getElementById('export'),
+    clearLog: document.getElementById('clearLog'),
+    sample: document.getElementById('sampleLoad'),
+    logbody: document.getElementById('logbody'),
+    mTotal: document.getElementById('m-total'),
+    mActive: document.getElementById('m-active'),
+    mComplete: document.getElementById('m-complete'),
+    mFailed: document.getElementById('m-failed'),
+    chart: document.getElementById('chart'),
+    time: document.getElementById('time'),
+    filter: document.getElementById('filter')
+  };
+
+  // state
+  const state = {
+    totalAttempts:0, active:0, completed:0, failed:0, running:false,
+    attemptLog:[], startTime:null, ticks:[], tickCount:0
+  };
+
+  let queue = [];
+  let activeCalls = new Set();
+  let queueTimer = null;
+  let tickTimer = null;
+  let pollQueue = null;
+  let clockTimer = null;
+
+  function updateMetrics(){
+    dom.mTotal.textContent = state.totalAttempts;
+    dom.mActive.textContent = state.active;
+    dom.mComplete.textContent = state.completed;
+    dom.mFailed.textContent = state.failed;
+  }
+
+  function pushLog(entry){
+    state.attemptLog.unshift(entry);
+    renderLog();
+  }
+
+  function renderLog(){
+    const filter = dom.filter.value;
+    const rows = state.attemptLog.filter(e=> filter==='all' ? true : e.status === filter );
+    dom.logbody.innerHTML = rows.slice(0,200).map((r,i) => {
+      return `<tr>
+        <td>${state.attemptLog.length - i}</td>
+        <td>${r.time}</td>
+        <td>${r.number}</td>
+        <td>${r.duration !== null ? r.duration.toFixed(1)+"s" : "—"}</td>
+        <td><span class="status ${r.status}">${r.status}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function addToChart(val){
+    state.ticks.push(val);
+    if(state.ticks.length>20) state.ticks.shift();
+    // render
+    dom.chart.innerHTML = state.ticks.map(v => {
+      const heightPx = Math.min(100, Math.round(v * 12)); // scaled
+      return `<div class="bar" style="height:${heightPx}px">${v}</div>`;
+    }).join('');
+  }
+
+  function simulateCall(number, id, meanDuration, sd){
+    const call = {id, number, startAt:Date.now(), status:'ringing', duration:null};
+    activeCalls.add(call);
+    state.active = activeCalls.size;
+    pushLog({time:nowStr(), number, duration:null, status:'ringing'});
+    updateMetrics();
+
+    // small chance to fail before connect
+    const willConnect = Math.random() > 0.12;
+    const toConnect = Math.random() * 1200 + 200;
+
+    setTimeout(()=>{
+      if(!activeCalls.has(call)) return;
+      if(!willConnect){
+        call.status = 'failed';
+        call.duration = 0;
+        activeCalls.delete(call);
+        state.failed += 1;
+        state.totalAttempts += 1;
+        state.active = activeCalls.size;
+        pushLog({time:nowStr(), number, duration:0, status:'failed'});
+        console.debug('Call failed:', id, number);
+        updateMetrics();
+      } else {
+        call.status = 'connected';
+        const dur = randNormal(meanDuration, sd);
+        call.duration = dur;
+        pushLog({time:nowStr(), number, duration:dur, status:'connected'});
+        updateMetrics();
+        console.debug('Call connected:', id, number, 'dur', dur.toFixed(1));
+        setTimeout(()=>{
+          if(!activeCalls.has(call)) return;
+          call.status = 'ended';
+          activeCalls.delete(call);
+          state.completed += 1;
+          state.totalAttempts += 1;
+          state.active = activeCalls.size;
+          pushLog({time:nowStr(), number, duration:dur, status:'ended'});
+          updateMetrics();
+        }, Math.max(200, Math.round(dur*1000)));
+      }
+    }, toConnect);
+  }
+
+  function startSimulation(){
+    if(state.running) return;
+    state.running = true;
+    state.startTime = Date.now();
+    dom.start.disabled = true;
+    dom.stop.disabled = false;
+
+    const attemptsTarget = Number(document.getElementById('attempts').value) || 100;
+    const concurrency = Number(document.getElementById('concurrency').value) || 5;
+    const rate = Math.max(1, Number(document.getElementById('rate').value) || 100);
+    const avgDur = Number(document.getElementById('avgDuration').value) || 30;
+    const sd = Number(document.getElementById('stdDev').value) || 8;
+    const number = document.getElementById('target').value || '+000000000';
+
+    let attemptsMade = 0;
+    state.ticks = [];
+    state.tickCount = 0;
+
+    clockTimer = setInterval(()=>{
+      const elapsed = Math.floor((Date.now() - state.startTime)/1000);
+      const hh = String(Math.floor(elapsed/3600)).padStart(2,'0');
+      const mm = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+      const ss = String(elapsed%60).padStart(2,'0');
+      dom.time.textContent = `${hh}:${mm}:${ss}`;
+    }, 500);
+
+    tickTimer = setInterval(()=>{
+      addToChart(state.tickCount);
+      state.tickCount = 0;
+    }, 1000);
+
+    queueTimer = setInterval(()=>{
+      if(attemptsMade >= attemptsTarget) return;
+      queue.push({number, meanDur:avgDur, sd});
+      attemptsMade++;
+      state.tickCount++;
+      // try to start immediately if capacity
+      while(activeCalls.size < concurrency && queue.length>0){
+        const job = queue.shift();
+        simulateCall(job.number, 'c'+Math.random().toString(36).slice(2,8), job.meanDur, job.sd);
+      }
+      state.active = activeCalls.size;
+      updateMetrics();
+    }, rate);
+
+    pollQueue = setInterval(()=>{
+      const targetConcurrency = Number(document.getElementById('concurrency').value) || concurrency;
+      while(activeCalls.size < targetConcurrency && queue.length>0){
+        const job = queue.shift();
+        simulateCall(job.number, 'c'+Math.random().toString(36).slice(2,8), job.meanDur, job.sd);
+      }
+      // stop entirely if we produced target attempts and nothing left and no active calls
+      if(attemptsMade >= attemptsTarget && queue.length===0 && activeCalls.size===0){
+        stopSimulation();
+      }
+    }, 250);
+
+    console.info('Simulation started: attemptsTarget=', attemptsTarget, 'concurrency=', concurrency, 'rate(ms)=',rate);
+  }
+
+  function stopSimulation(){
+    if(!state.running) return;
+    state.running = false;
+    dom.start.disabled = false;
+    dom.stop.disabled = true;
+    clearInterval(queueTimer); queueTimer = null;
+    clearInterval(tickTimer); tickTimer = null;
+    clearInterval(pollQueue); pollQueue = null;
+    clearInterval(clockTimer); clockTimer = null;
+    console.info('Simulation stopped. Active calls will finish:', activeCalls.size);
+  }
+
+  function resetSimulation(){
+    stopSimulation();
+    queue = [];
+    activeCalls.clear();
+    state.totalAttempts = 0; state.active = 0; state.completed = 0; state.failed = 0;
+    state.attemptLog = []; state.ticks = []; state.tickCount = 0;
+    dom.time.textContent = '00:00:00';
+    dom.logbody.innerHTML = '';
+    dom.chart.innerHTML = '';
+    updateMetrics();
+    console.info('Simulation reset');
+  }
+
+  // UI hooks
+  dom.start.addEventListener('click', startSimulation);
+  dom.stop.addEventListener('click', stopSimulation);
+  dom.reset.addEventListener('click', resetSimulation);
+  dom.clearLog.addEventListener('click', ()=>{ state.attemptLog = []; renderLog(); });
+  dom.sample.addEventListener('click', ()=>{
+    document.getElementById('attempts').value = 500;
+    document.getElementById('concurrency').value = 28;
+    document.getElementById('rate').value = 40;
+    document.getElementById('avgDuration').value = 18;
+    document.getElementById('stdDev').value = 6;
+    alert('Sample scenario loaded (simulated). Press Start.');
+  });
+  dom.exportBtn.addEventListener('click', ()=>{
+    if(state.attemptLog.length===0){ alert('No log to export'); return; }
+    const csv = ['time,number,duration,status', ...state.attemptLog.map(r => `${r.time},"${r.number}",${r.duration === null ? '' : r.duration.toFixed(2)},${r.status}`)];
+    const blob = new Blob([csv.join('\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'call_simulation_log.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  });
+  dom.filter.addEventListener('change', renderLog);
+
+  // ensure cleanup
+  window.addEventListener('beforeunload', ()=>{ stopSimulation(); });
+
+  // initial state
+  resetSimulation();
+})();
+</script>
+</body>
+</html>
